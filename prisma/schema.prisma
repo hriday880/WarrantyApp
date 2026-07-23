@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  phoneNumber  String        @unique
+  name         String
+  password     String?       // Only for admins
+  role         String        @default("CUSTOMER") // "ADMIN" or "CUSTOMER"
+  creditPoints Int           @default(0)
+  createdAt    DateTime      @default(now())
+  scans        ScanHistory[]
+}
+
+model Product {
+  id             String        @id @default(uuid())
+  name           String
+  sku            String        @unique
+  warrantyMonths Int
+  creditPoints   Int           @default(0)
+  createdAt      DateTime      @default(now())
+  scans          ScanHistory[]
+}
+
+model ScanHistory {
+  id          String   @id @default(uuid())
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   String
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  scannedAt   DateTime @default(now())
+  latitude    Float?
+  longitude   Float?
+  isFirstScan Boolean  @default(false)
+}
