@@ -7,7 +7,6 @@ import styles from './login.module.css';
 function LoginForm() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setName] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,7 +20,7 @@ function LoginForm() {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phoneNumber, name, rememberMe }),
+      body: JSON.stringify({ phoneNumber, name }),
     });
 
     if (res.ok) {
@@ -60,15 +59,6 @@ function LoginForm() {
             required
           />
         </div>
-
-        <label className={styles.checkboxGroup}>
-          <input
-            type="checkbox"
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-          />
-          Remember Me
-        </label>
 
         <button type="submit" className={styles.submitBtn}>Continue</button>
       </form>

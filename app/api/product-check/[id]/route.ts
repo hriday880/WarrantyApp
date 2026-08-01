@@ -13,6 +13,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { id: productId } = resolvedParams;
     const { latitude, longitude } = await req.json();
 
+    const dbUser = await prisma.user.findUnique({ where: { id: session.id } });
+    if (!dbUser) {
+      return NextResponse.json({ error: 'User session invalid or expired' }, { status: 401 });
+    }
+
     const product = await prisma.product.findUnique({
       where: { id: productId },
       include: {
@@ -76,6 +81,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const resolvedParams = await params;
     const { id: productId } = resolvedParams;
+
+    const dbUser = await prisma.user.findUnique({ where: { id: session.id } });
+    if (!dbUser) {
+      return NextResponse.json({ error: 'User session invalid or expired' }, { status: 401 });
+    }
 
     const product = await prisma.product.findUnique({
       where: { id: productId },

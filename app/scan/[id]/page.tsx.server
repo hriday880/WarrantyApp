@@ -1,0 +1,15 @@
+import { redirect } from 'next/navigation';
+import { getSession } from '@/lib/auth';
+
+export default async function ScanPageWrapper({ params }: { params: Promise<{ id: string }> }) {
+  const session = await getSession();
+  const resolvedParams = await params;
+  
+  if (!session) {
+    redirect(`/login?returnTo=/scan/${resolvedParams.id}`);
+  }
+
+  // If we reach here, they are authenticated.
+  // We can just render the client component and pass the ID.
+  // We'll let the client component fetch the product, or we can fetch it here!
+}
