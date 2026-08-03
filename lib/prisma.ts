@@ -19,9 +19,14 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// Vercel sometimes injects the literal string "undefined" into DATABASE_URL, which crashes Prisma's schema parser.
+// We must override it to a valid dummy URL before instantiating PrismaClient. The actual connection is handled by the adapter.
+if (!process.env.DATABASE_URL || process.env.DATABASE_URL === 'undefined' || process.env.DATABASE_URL === 'null') {
+  process.env.DATABASE_URL = "file:./dummy.db";
+}
+
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({ 
-  adapter,
-  datasourceUrl: finalUrl
+  adapter
 });
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
