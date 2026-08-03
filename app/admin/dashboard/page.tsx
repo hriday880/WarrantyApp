@@ -134,6 +134,28 @@ export default function AdminDashboard() {
     window.print();
   };
 
+  const handleDownloadCSV = () => {
+    const selectedProducts = results.filter(p => selectedIds.has(p.id));
+    if (selectedProducts.length === 0) return;
+
+    const headers = ['Product Name', 'Serial Number', 'Scan URL'];
+    const rows = selectedProducts.map(p => [
+      `"${p.name.replace(/"/g, '""')}"`,
+      `"${p.sku.replace(/"/g, '""')}"`,
+      `"${p.scanUrl}"`
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `warranty_batch_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleClearCredits = async (userId: string, userName: string) => {
     setActionLoadingId(userId);
     setBanner(null);
@@ -372,6 +394,14 @@ export default function AdminDashboard() {
                   <div className={styles.actionButtons}>
                     <button type="button" className={styles.selectAllBtn} onClick={handleSelectAll}>
                       {selectedIds.size === results.length ? 'Deselect All' : 'Select All'}
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.csvBtn}
+                      onClick={handleDownloadCSV}
+                      disabled={selectedIds.size === 0}
+                    >
+                      📊 Download CSV
                     </button>
                     <button
                       className={styles.printBtn}
