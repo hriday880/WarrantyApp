@@ -826,9 +826,9 @@
 
   .printLayout_custom {
     display: flex !important;
-    flex-wrap: nowrap;
-    gap: var(--print-gap, 0);
-    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0 var(--print-gap, 0);
+    justify-content: flex-start;
     width: 100%;
   }
   .printLayout_custom::after {
