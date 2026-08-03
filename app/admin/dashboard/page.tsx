@@ -202,6 +202,7 @@ export default function AdminDashboard() {
           ${labelSize === '2x1' ? '@page { size: 2in 1in; margin: 0; }' : ''}
           ${labelSize === '2x2' ? '@page { size: 2in 2in; margin: 0; }' : ''}
           ${labelSize === '4x6' ? '@page { size: 4in 6in; margin: 0; }' : ''}
+          ${labelSize === '18x18' ? '@page { size: 18mm 18mm; margin: 0; }' : ''}
           ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
           ${labelSize === 'custom' ? `@page { size: ${customSize.width}in ${customSize.height}in; margin: 0; }` : ''}
         }
@@ -317,6 +318,7 @@ export default function AdminDashboard() {
                         <option value="2x1">2" x 1" (Small Labels)</option>
                         <option value="2x2">2" x 2" (Square Labels)</option>
                         <option value="4x6">4" x 6" (Shipping Labels)</option>
+                        <option value="18x18">18mm x 18mm (Micro Labels)</option>
                         <option value="default">Standard A4 Sheet</option>
                         <option value="custom">Custom Size</option>
                       </select>

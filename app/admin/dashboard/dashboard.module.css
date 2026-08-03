@@ -756,7 +756,7 @@
   }
 
   /* Single Label Layouts */
-  .printLayout_2x1, .printLayout_2x2, .printLayout_4x6, .printLayout_custom {
+  .printLayout_2x1, .printLayout_2x2, .printLayout_4x6, .printLayout_custom, .printLayout_18x18 {
     display: block;
     width: 100%;
   }
@@ -764,7 +764,8 @@
   .printLayout_2x1 .qrItem, 
   .printLayout_2x2 .qrItem, 
   .printLayout_4x6 .qrItem,
-  .printLayout_custom .qrItem {
+  .printLayout_custom .qrItem,
+  .printLayout_18x18 .qrItem {
     width: 100vw;
     height: 100vh;
     border: none;
@@ -811,4 +812,31 @@
   }
   .printLayout_custom .qrLabels strong { font-size: 1rem; }
   .printLayout_custom .qrLabels span { font-size: 0.8rem; }
+
+  .printLayout_18x18 .qrItem {
+    padding: 0.5mm !important;
+    gap: 0 !important;
+    justify-content: flex-start !important;
+  }
+  .printLayout_18x18 .qrImage {
+    max-width: 14mm;
+    max-height: 14mm;
+    margin: 0;
+  }
+  .printLayout_18x18 .qrLabels {
+    gap: 0;
+    line-height: 1;
+    margin-top: 0.5mm;
+  }
+  .printLayout_18x18 .qrLabels strong { 
+    font-size: 4pt; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 17mm;
+  }
+  .printLayout_18x18 .qrLabels span { 
+    font-size: 3.5pt;
+    white-space: nowrap;
+  }
 }
