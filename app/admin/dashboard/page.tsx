@@ -205,7 +205,7 @@ export default function AdminDashboard() {
           ${labelSize === '18x18' ? '@page { size: 18mm 18mm; margin: 0; }' : ''}
           ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
           ${labelSize === 'custom' ? `@page { size: ${customSize.width}cm ${customSize.height}cm; margin: 0; }` : ''}
-          ${labelSize === 'custom' ? `:root { --print-cols: ${customSize.columns || 1}; }` : ''}
+          ${labelSize === 'custom' ? `:root { --print-cols: ${customSize.columns || 1}; --print-row-height: ${customSize.height}cm; }` : ''}
         }
       `}</style>
       <header className={`${styles.header} ${styles.noPrint}`}>

@@ -817,7 +817,7 @@
 
   .printLayout_custom {
     display: block !important;
-    width: 100vw;
+    width: 100%;
   }
   .printLayout_custom::after {
     content: "";
@@ -826,8 +826,8 @@
   }
   .printLayout_custom .qrItem {
     float: left;
-    width: calc(100vw / var(--print-cols, 1));
-    height: 100vh;
+    width: calc(100% / var(--print-cols, 1));
+    height: var(--print-row-height, 100%);
     box-sizing: border-box !important;
     border: none;
     background: #fff;
