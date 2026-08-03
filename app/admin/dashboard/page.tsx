@@ -227,7 +227,13 @@ export default function AdminDashboard() {
           ${labelSize === '18x18' ? '@page { size: 18mm 18mm; margin: 0; }' : ''}
           ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
           ${labelSize === 'custom' ? `@page { size: ${customSize.width}cm ${customSize.height}cm; margin: 0; }` : ''}
-          ${labelSize === 'custom' ? `:root { --print-cols: ${customSize.columns || 1}; --print-row-height: ${customSize.height}cm; --print-gap: ${customSize.gap || 0}cm; }` : ''}
+          ${labelSize === 'custom' ? `
+            .printLayout_custom { gap: 0 ${customSize.gap || 0}cm !important; }
+            .printLayout_custom .qrItem {
+              width: calc((100% - (${customSize.gap || 0}cm * (${customSize.columns || 1} - 1))) / ${customSize.columns || 1}) !important;
+              height: ${customSize.height}cm !important;
+            }
+          ` : ''}
         }
       `}</style>
       <header className={`${styles.header} ${styles.noPrint}`}>
