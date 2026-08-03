@@ -842,13 +842,14 @@
     break-inside: avoid;
   }
   .printLayout_custom .qrImage {
-    max-width: 90%;
-    max-height: 90%;
-    margin-bottom: 2px;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
     object-fit: contain;
   }
-  .printLayout_custom .qrLabels strong { font-size: 8pt; line-height: 1.1; }
-  .printLayout_custom .qrLabels span { font-size: 6pt; line-height: 1.1; }
+  .printLayout_custom .qrLabels {
+    display: none !important;
+  }
 
   .printLayout_18x18 .qrItem {
     padding: 0.5mm !important;
