@@ -248,10 +248,71 @@
   box-shadow: 0 10px 20px -10px rgba(37, 99, 235, 0.5);
 }
 
-.submitBtn:disabled, .printBtn:disabled {
+.submitBtn:disabled, .printBtn:disabled, .qzPrintBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+/* QZ Tray Integration Styles */
+.qzContainer {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.qzConnectBtn {
+  background: transparent;
+  color: #10b981;
+  border: 1px solid #10b981;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qzConnectBtn:hover {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.qzActive {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.printerSelect {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.qzPrintBtn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qzPrintBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.5);
+}
+
+.qzError {
+  color: #f87171;
+  font-size: 0.85rem;
 }
 
 .resultHeader {

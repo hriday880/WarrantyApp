@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import qz from 'qz-tray';
 import styles from './dashboard.module.css';
 
 interface GeneratedProduct {
@@ -47,6 +48,13 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // QZ Tray State
+  const [qzConnected, setQzConnected] = useState(false);
+  const [printers, setPrinters] = useState<string[]>([]);
+  const [selectedPrinter, setSelectedPrinter] = useState<string>('');
+  const [qzError, setQzError] = useState('');
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -121,6 +129,67 @@ export default function AdminDashboard() {
       setError(`Network error: ${err.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleConnectQZ = async () => {
+    setQzError('');
+    try {
+      if (!qz.websocket.isActive()) {
+        await qz.websocket.connect();
+      }
+      setQzConnected(true);
+      const foundPrinters = await qz.printers.find();
+      setPrinters(foundPrinters);
+      if (foundPrinters.length > 0) {
+        setSelectedPrinter(foundPrinters[0]);
+      }
+    } catch (err: any) {
+      setQzError(err.message || 'Failed to connect to QZ Tray. Is it running?');
+    }
+  };
+
+  const handleQZPrint = async () => {
+    if (!selectedPrinter) {
+      setQzError('Please select a printer first.');
+      return;
+    }
+    setIsPrinting(true);
+    setQzError('');
+    try {
+      const selectedProducts = results.filter(r => selectedIds.has(r.id));
+      if (selectedProducts.length === 0) return;
+
+      const config = qz.configs.create(selectedPrinter);
+
+      const htmlContent = `
+        <html>
+          <body style="margin:0; padding:10px; font-family:sans-serif; text-align:center;">
+             ${selectedProducts.map(p => `
+               <div style="page-break-after: always; display:flex; flex-direction:column; align-items:center; justify-content:center; height: 100vh;">
+                 <img src="${p.qrCodeDataUrl}" style="max-width: 80%; max-height: 80%;" />
+                 <h2 style="margin:10px 0 5px 0; font-size: 24px;">${p.name}</h2>
+                 <p style="margin:0; font-size: 16px;">SN: ${p.sku}</p>
+               </div>
+             `).join('')}
+          </body>
+        </html>
+      `;
+
+      const printData = [
+        {
+          type: 'pixel',
+          format: 'html',
+          flavor: 'plain',
+          data: htmlContent
+        }
+      ];
+
+      await qz.print(config, printData);
+    } catch (err: any) {
+      setQzError(err.message || 'Print failed.');
+    } finally {
+      setIsPrinting(false);
     }
   };
 
@@ -285,6 +354,34 @@ export default function AdminDashboard() {
                     <h2 className={styles.cardTitle}>Generated {results.length} Batch QRs</h2>
                     <p className={styles.cardSubtitle}>Select codes to send to high-resolution printing</p>
                   </div>
+                  
+                  {/* QZ Tray Integration UI */}
+                  <div className={styles.qzContainer}>
+                    {!qzConnected ? (
+                      <button type="button" className={styles.qzConnectBtn} onClick={handleConnectQZ}>
+                        🔌 Connect QZ Tray
+                      </button>
+                    ) : (
+                      <div className={styles.qzActive}>
+                        <select 
+                          value={selectedPrinter} 
+                          onChange={(e) => setSelectedPrinter(e.target.value)}
+                          className={styles.printerSelect}
+                        >
+                          {printers.map(p => <option key={p} value={p}>{p}</option>)}
+                        </select>
+                        <button 
+                          className={styles.qzPrintBtn} 
+                          onClick={handleQZPrint}
+                          disabled={selectedIds.size === 0 || isPrinting}
+                        >
+                          {isPrinting ? 'Printing...' : `🖨️ Direct Print (${selectedIds.size})`}
+                        </button>
+                      </div>
+                    )}
+                    {qzError && <span className={styles.qzError}>{qzError}</span>}
+                  </div>
+
                   <div className={styles.actionButtons}>
                     <button type="button" className={styles.selectAllBtn} onClick={handleSelectAll}>
                       {selectedIds.size === results.length ? 'Deselect All' : 'Select All'}
