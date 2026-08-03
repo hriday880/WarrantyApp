@@ -37,27 +37,27 @@ function LoginForm() {
       
       <form onSubmit={handleLogin} className={styles.form}>
         <div className={styles.inputGroup}>
-          <label htmlFor="name">Full Name</label>
           <input
             type="text"
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. John Doe"
+            placeholder=" "
             required
           />
+          <label htmlFor="name">Full Name</label>
         </div>
         
         <div className={styles.inputGroup}>
-          <label htmlFor="phoneNumber">Phone Number</label>
           <input
             type="tel"
             id="phoneNumber"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="e.g. 9876543210"
+            placeholder=" "
             required
           />
+          <label htmlFor="phoneNumber">Phone Number</label>
         </div>
 
         <button type="submit" className={styles.submitBtn}>Continue</button>

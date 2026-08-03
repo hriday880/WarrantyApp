@@ -94,21 +94,6 @@ export default function ScanClient({ productId }: { productId: string }) {
           <a 
             href="/dashboard"
             className={styles.dashboardBtn}
-            style={{
-              display: 'block',
-              width: '100%',
-              padding: '16px',
-              marginTop: '24px',
-              backgroundColor: '#3b82f6',
-              border: 'none',
-              borderRadius: '12px',
-              color: '#ffffff',
-              fontSize: '1.1rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              textAlign: 'center',
-              textDecoration: 'none'
-            }}
           >
             View My Dashboard & History &rarr;
           </a>
@@ -150,21 +135,7 @@ export default function ScanClient({ productId }: { productId: string }) {
               e.preventDefault();
               performScan(e);
             }}
-            className={styles.dashboardBtn}
-            style={{
-              display: 'block',
-              width: '100%',
-              padding: '16px',
-              marginTop: '24px',
-              backgroundColor: '#22c55e',
-              border: 'none',
-              borderRadius: '12px',
-              color: '#ffffff',
-              fontSize: '1.1rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              boxShadow: '0 4px 14px 0 rgba(34, 197, 94, 0.39)'
-            }}
+            className={styles.actionBtn}
           >
             Register & Claim Points &rarr;
           </button>
@@ -172,21 +143,6 @@ export default function ScanClient({ productId }: { productId: string }) {
           <a 
             href="/dashboard"
             className={styles.dashboardBtn}
-            style={{
-              display: 'block',
-              width: '100%',
-              padding: '16px',
-              marginTop: '12px',
-              backgroundColor: '#f1f5f9',
-              border: '1px solid #cbd5e1',
-              borderRadius: '12px',
-              color: '#475569',
-              fontSize: '1.1rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              textAlign: 'center',
-              textDecoration: 'none'
-            }}
           >
             View My Dashboard & History &rarr;
           </a>
@@ -302,22 +258,6 @@ export default function ScanClient({ productId }: { productId: string }) {
         <a 
           href="/dashboard"
           className={styles.dashboardBtn}
-          style={{
-            display: 'block',
-            width: '100%',
-            padding: '16px',
-            marginTop: '24px',
-            backgroundColor: '#3b82f6',
-            border: 'none',
-            borderRadius: '12px',
-            color: '#ffffff',
-            fontSize: '1.1rem',
-            fontWeight: '600',
-            cursor: 'pointer',
-            boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.39)',
-            textAlign: 'center',
-            textDecoration: 'none'
-          }}
         >
           View My Dashboard & History →
         </a>

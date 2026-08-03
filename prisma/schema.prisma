@@ -14,6 +14,7 @@ model User {
   password     String?       // Only for admins
   role         String        @default("CUSTOMER") // "ADMIN" or "CUSTOMER"
   creditPoints Int           @default(0)
+  isBanned     Boolean       @default(false)
   createdAt    DateTime      @default(now())
   scans        ScanHistory[]
 }

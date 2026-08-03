@@ -16,47 +16,47 @@ export default function ScanPage({ params }: { params: Promise<{ id: string }> }
 
 
   useEffect(() => {
+    const fetchProductAndScan = async () => {
+      try {
+        // First check if product exists and if we are authorized
+        const getRes = await fetch(`/api/scan/${productId}`);
+        if (getRes.status === 401) {
+          window.location.href = `/login?returnTo=/scan/${productId}`;
+          return;
+        }
+        
+        if (!getRes.ok) {
+          setError('Product not found or invalid QR code.');
+          setLoading(false);
+          return;
+        }
+
+        const data = await getRes.json();
+        setProduct(data.product);
+
+        if (data.product.scans && data.product.scans.length > 0) {
+          // Already registered. Log the subsequent scan in the background
+          fetch(`/api/scan/${productId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({}),
+          }).then(async (res) => {
+            if (res.ok) {
+              const newData = await res.json();
+              setProduct(newData.product);
+            }
+          });
+        }
+        
+        setLoading(false);
+      } catch {
+        setError('An error occurred.');
+        setLoading(false);
+      }
+    };
+
     fetchProductAndScan();
   }, [productId]);
-
-  const fetchProductAndScan = async () => {
-    try {
-      // First check if product exists and if we are authorized
-      const getRes = await fetch(`/api/scan/${productId}`);
-      if (getRes.status === 401) {
-        window.location.href = `/login?returnTo=/scan/${productId}`;
-        return;
-      }
-      
-      if (!getRes.ok) {
-        setError('Product not found or invalid QR code.');
-        setLoading(false);
-        return;
-      }
-
-      const data = await getRes.json();
-      setProduct(data.product);
-
-      if (data.product.scans && data.product.scans.length > 0) {
-        // Already registered. Log the subsequent scan in the background
-        fetch(`/api/scan/${productId}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({}),
-        }).then(async (res) => {
-          if (res.ok) {
-            const newData = await res.json();
-            setProduct(newData.product);
-          }
-        });
-      }
-      
-      setLoading(false);
-    } catch (err) {
-      setError('An error occurred.');
-      setLoading(false);
-    }
-  };
 
   const performScan = async () => {
     setLoading(true);

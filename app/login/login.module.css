@@ -3,125 +3,173 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #4f46e5 0%, #0f172a 100%);
   padding: 1rem;
-  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background elements for premium feel */
+.container::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.container::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
 }
 
 .glassCard {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  padding: 3rem 2.5rem;
   border-radius: 24px;
-  padding: 3rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  animation: slideUp 0.5s ease-out;
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .title {
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: #fff;
+  margin: 0 0 0.5rem 0;
   text-align: center;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-  color: #cbd5e1;
+  color: var(--text-secondary);
   text-align: center;
-  margin-bottom: 2rem;
-}
-
-.error {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  padding: 0.75rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  font-size: 0.875rem;
-  text-align: center;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  margin: 0 0 2.5rem 0;
+  font-size: 0.95rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .inputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.checkboxGroup {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #f1f5f9;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.checkboxGroup input {
-  width: 1.1rem;
-  height: 1.1rem;
-  cursor: pointer;
+  position: relative;
 }
 
 .inputGroup label {
-  color: #f1f5f9;
-  font-size: 0.875rem;
-  font-weight: 500;
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  background: transparent;
 }
 
 .inputGroup input {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.875rem 1rem;
+  width: 100%;
+  padding: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   transition: all 0.2s ease;
 }
 
-.inputGroup input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+/* Floating Label Animation */
+.inputGroup input:focus + label,
+.inputGroup input:not(:placeholder-shown) + label {
+  top: 0.65rem;
+  font-size: 0.75rem;
+  color: var(--accent-primary);
 }
 
 .inputGroup input:focus {
   outline: none;
-  border-color: #818cf8;
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3);
+  border-color: var(--accent-primary);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+/* Hide actual placeholder text since we use floating labels */
+.inputGroup input::placeholder {
+  color: transparent;
 }
 
 .submitBtn {
-  background: #fff;
-  color: #4f46e5;
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: white;
   padding: 1rem;
   border: none;
   border-radius: 12px;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.submitBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .submitBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 25px -5px var(--accent-glow);
+}
+
+.submitBtn:hover::before {
+  opacity: 1;
 }
 
 .submitBtn:active {
   transform: translateY(0);
+}
+
+.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
 @keyframes slideUp {
@@ -133,4 +181,11 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }

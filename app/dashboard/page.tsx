@@ -26,8 +26,12 @@ export default async function ElectricianDashboard() {
   }
 
   // Fetch their scan history along with product details
+  // Only fetch scans where isFirstScan is true so they only see products they actually registered
   const scanHistory = await prisma.scanHistory.findMany({
-    where: { userId: user.id },
+    where: { 
+      userId: user.id,
+      isFirstScan: true 
+    },
     include: { product: true },
     orderBy: { scannedAt: 'desc' },
   });

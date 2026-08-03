@@ -17,6 +17,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!dbUser) {
       return NextResponse.json({ error: 'User session invalid or expired' }, { status: 401 });
     }
+    if (dbUser.isBanned) {
+      return NextResponse.json({ error: 'Your account has been banned. Please contact support.' }, { status: 403 });
+    }
 
     const product = await prisma.product.findUnique({
       where: { id: productId },
@@ -85,6 +88,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const dbUser = await prisma.user.findUnique({ where: { id: session.id } });
     if (!dbUser) {
       return NextResponse.json({ error: 'User session invalid or expired' }, { status: 401 });
+    }
+    if (dbUser.isBanned) {
+      return NextResponse.json({ error: 'Your account has been banned. Please contact support.' }, { status: 403 });
     }
 
     const product = await prisma.product.findUnique({

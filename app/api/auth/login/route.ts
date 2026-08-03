@@ -24,6 +24,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    if (user.isBanned) {
+      return NextResponse.json({ error: 'Your account has been banned. Please contact support.' }, { status: 403 });
+    }
+
     const token = await signToken({ id: user.id, role: user.role });
 
     const response = NextResponse.json({ success: true });
