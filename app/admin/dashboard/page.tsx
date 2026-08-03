@@ -52,7 +52,7 @@ export default function AdminDashboard() {
 
   // Label Printing State
   const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | 'default' | 'custom'>('2x1');
-  const [customSize, setCustomSize] = useState({ width: '10', height: '2', columns: '4' });
+  const [customSize, setCustomSize] = useState({ width: '8.5', height: '1', columns: '4', gap: '0.1' });
 
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -205,7 +205,7 @@ export default function AdminDashboard() {
           ${labelSize === '18x18' ? '@page { size: 18mm 18mm; margin: 0; }' : ''}
           ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
           ${labelSize === 'custom' ? `@page { size: ${customSize.width}cm ${customSize.height}cm; margin: 0; }` : ''}
-          ${labelSize === 'custom' ? `:root { --print-cols: ${customSize.columns || 1}; --print-row-height: ${customSize.height}cm; }` : ''}
+          ${labelSize === 'custom' ? `:root { --print-cols: ${customSize.columns || 1}; --print-row-height: ${customSize.height}cm; --print-gap: ${customSize.gap || 0}cm; }` : ''}
         }
       `}</style>
       <header className={`${styles.header} ${styles.noPrint}`}>
@@ -353,6 +353,16 @@ export default function AdminDashboard() {
                             onChange={(e) => setCustomSize(prev => ({ ...prev, columns: e.target.value }))} 
                             className={styles.sizeInput} 
                             title="Labels per row"
+                          />
+                          <span style={{ marginLeft: '10px' }}>Gap:</span>
+                          <input 
+                            type="number" 
+                            step="0.01" 
+                            min="0"
+                            value={customSize.gap} 
+                            onChange={(e) => setCustomSize(prev => ({ ...prev, gap: e.target.value }))} 
+                            className={styles.sizeInput} 
+                            title="Gap between labels in cm"
                           />
                         </div>
                       )}

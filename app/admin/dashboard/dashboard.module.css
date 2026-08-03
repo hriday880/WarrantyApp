@@ -816,17 +816,17 @@
   .printLayout_4x6 .qrLabels span { font-size: 1.2rem; }
 
   .printLayout_custom {
-    display: block !important;
+    display: flex !important;
+    flex-wrap: nowrap;
+    gap: var(--print-gap, 0);
+    justify-content: center;
     width: 100%;
   }
   .printLayout_custom::after {
-    content: "";
-    display: table;
-    clear: both;
+    display: none;
   }
   .printLayout_custom .qrItem {
-    float: left;
-    width: calc(100% / var(--print-cols, 1));
+    width: calc((100% - (var(--print-gap, 0) * (var(--print-cols, 1) - 1))) / var(--print-cols, 1));
     height: var(--print-row-height, 100%);
     box-sizing: border-box !important;
     border: none;
