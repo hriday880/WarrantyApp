@@ -1,0 +1,1 @@
+require('dotenv').config(); const { createClient } = require('@libsql/client'); const client = createClient({ url: process.env.DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN }); client.execute('SELECT * FROM User').then(res => console.log(res.rows)).finally(() => client.close());

@@ -51,7 +51,7 @@ export default function AdminDashboard() {
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Label Printing State
-  const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | 'default' | 'custom'>('2x1');
+  const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | '18x18' | 'default' | 'custom'>('2x1');
   const [customSize, setCustomSize] = useState({ width: '8.5', height: '1', columns: '4', gap: '0.1' });
 
   const fetchUsers = async () => {
@@ -134,28 +134,6 @@ export default function AdminDashboard() {
     window.print();
   };
 
-  const handleDownloadCSV = () => {
-    const selectedProducts = results.filter(p => selectedIds.has(p.id));
-    if (selectedProducts.length === 0) return;
-
-    const headers = ['Product Name', 'Serial Number', 'Scan URL'];
-    const rows = selectedProducts.map(p => [
-      `"${p.name.replace(/"/g, '""')}"`,
-      `"${p.sku.replace(/"/g, '""')}"`,
-      `"${p.scanUrl}"`
-    ]);
-
-    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `warranty_batch_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const handleClearCredits = async (userId: string, userName: string) => {
     setActionLoadingId(userId);
     setBanner(null);
@@ -228,10 +206,48 @@ export default function AdminDashboard() {
           ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
           ${labelSize === 'custom' ? `@page { size: ${customSize.width}cm ${customSize.height}cm; margin: 0; }` : ''}
           ${labelSize === 'custom' ? `
-            .printLayout_custom { gap: 0 ${customSize.gap || 0}cm !important; }
-            .printLayout_custom .qrItem {
-              width: calc((100% - (${customSize.gap || 0}cm * (${customSize.columns || 1} - 1))) / ${customSize.columns || 1}) !important;
+            [data-print-layout="custom"] {
+              display: flex !important;
+              flex-wrap: wrap !important;
+              gap: 0 !important;
+              justify-content: flex-start !important;
+              width: 100% !important;
+              padding: 0 !important;
+              margin: 0 !important;
+            }
+            [data-print-layout="custom"] [data-print-item] {
+              width: calc(100% / ${customSize.columns || 1}) !important;
               height: ${customSize.height}cm !important;
+              box-sizing: border-box !important;
+              border: none !important;
+              background: #fff !important;
+              padding: 0.5mm !important;
+              margin: 0 !important;
+              box-shadow: none !important;
+              display: flex !important;
+              flex-direction: column !important;
+              align-items: center !important;
+              justify-content: center !important;
+              overflow: hidden !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+              border-radius: 0 !important;
+            }
+            [data-print-layout="custom"] [data-print-item] img {
+              max-width: 100% !important;
+              max-height: 70% !important;
+              margin: 0 !important;
+              object-fit: contain !important;
+            }
+            [data-print-layout="custom"] [data-print-item] strong {
+              font-size: 5pt !important;
+              line-height: 1 !important;
+              margin: 0 !important;
+            }
+            [data-print-layout="custom"] [data-print-item] span {
+              font-size: 4pt !important;
+              line-height: 1 !important;
+              margin: 0 !important;
             }
           ` : ''}
         }
@@ -382,16 +398,6 @@ export default function AdminDashboard() {
                             className={styles.sizeInput} 
                             title="Labels per row"
                           />
-                          <span style={{ marginLeft: '10px' }}>Gap:</span>
-                          <input 
-                            type="number" 
-                            step="0.01" 
-                            min="0"
-                            value={customSize.gap} 
-                            onChange={(e) => setCustomSize(prev => ({ ...prev, gap: e.target.value }))} 
-                            className={styles.sizeInput} 
-                            title="Gap between labels in cm"
-                          />
                         </div>
                       )}
                     </div>
@@ -400,14 +406,6 @@ export default function AdminDashboard() {
                   <div className={styles.actionButtons}>
                     <button type="button" className={styles.selectAllBtn} onClick={handleSelectAll}>
                       {selectedIds.size === results.length ? 'Deselect All' : 'Select All'}
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.csvBtn}
-                      onClick={handleDownloadCSV}
-                      disabled={selectedIds.size === 0}
-                    >
-                      📊 Download CSV
                     </button>
                     <button
                       className={styles.printBtn}
@@ -419,13 +417,17 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className={`${styles.qrGrid} ${styles[`printLayout_${labelSize}`]}`}>
+                <div
+                  className={`${styles.qrGrid} ${styles[`printLayout_${labelSize}`]}`}
+                  data-print-layout={labelSize}
+                >
                   {results.map((product) => {
                     const isSelected = selectedIds.has(product.id);
                     return (
                       <div
                         key={product.id}
                         className={`${styles.qrItem} ${isSelected ? styles.selected : ''} ${!isSelected ? styles.noPrint : ''}`}
+                        data-print-item
                         onClick={() => toggleSelection(product.id)}
                       >
                         <div className={`${styles.checkbox} ${styles.noPrint}`}>

@@ -184,7 +184,7 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
-.submitBtn, .printBtn, .csvBtn {
+.submitBtn, .printBtn {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   padding: 0.875rem 1.5rem;
@@ -194,10 +194,6 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.csvBtn {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 .submitBtn {
@@ -252,12 +248,7 @@
   box-shadow: 0 10px 20px -10px rgba(37, 99, 235, 0.5);
 }
 
-.csvBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.5);
-}
-
-.submitBtn:disabled, .printBtn:disabled, .csvBtn:disabled, .qzPrintBtn:disabled {
+.submitBtn:disabled, .printBtn:disabled, .qzPrintBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
@@ -824,19 +815,19 @@
   .printLayout_4x6 .qrLabels strong { font-size: 1.5rem; }
   .printLayout_4x6 .qrLabels span { font-size: 1.2rem; }
 
+  /* Custom layout: sizing is handled by data-* attribute selectors in the
+     dynamic <style> tag in page.tsx to bypass CSS Module class name hashing.
+     This block only provides baseline flex layout. */
   .printLayout_custom {
     display: flex !important;
     flex-wrap: wrap;
-    gap: 0 var(--print-gap, 0);
+    gap: 0;
     justify-content: flex-start;
     width: 100%;
-  }
-  .printLayout_custom::after {
-    display: none;
+    padding: 0;
+    margin: 0;
   }
   .printLayout_custom .qrItem {
-    width: calc((100% - (var(--print-gap, 0) * (var(--print-cols, 1) - 1))) / var(--print-cols, 1));
-    height: var(--print-row-height, 100%);
     box-sizing: border-box !important;
     border: none;
     background: #fff;
@@ -847,30 +838,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-  .printLayout_custom .qrImage {
-    max-width: 100%;
-    max-height: 65%;
-    margin: 0 0 1px 0;
-    object-fit: contain;
-  }
-  .printLayout_custom .qrLabels {
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-  }
-  .printLayout_custom .qrLabels strong { 
-    font-size: 5pt; 
-    line-height: 1; 
-    margin: 0; 
-  }
-  .printLayout_custom .qrLabels span { 
-    font-size: 4pt; 
-    line-height: 1; 
-    margin: 0; 
+    overflow: hidden;
+    border-radius: 0;
   }
 
   .printLayout_18x18 .qrItem {
