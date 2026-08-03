@@ -254,34 +254,20 @@
   transform: none;
 }
 
-/* QZ Tray Integration Styles */
-.qzContainer {
+/* Print Layout Options */
+.printOptionsContainer {
   margin: 1rem 0;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.qzConnectBtn {
-  background: transparent;
-  color: #10b981;
-  border: 1px solid #10b981;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.qzConnectBtn:hover {
-  background: rgba(16, 185, 129, 0.1);
-}
-
-.qzActive {
+.labelSizeSelector {
   display: flex;
-  gap: 0.75rem;
   align-items: center;
+  gap: 0.75rem;
+  color: #cbd5e1;
+  font-size: 0.9rem;
 }
 
 .printerSelect {
@@ -291,28 +277,7 @@
   border-radius: 8px;
   color: #fff;
   font-size: 0.9rem;
-}
-
-.qzPrintBtn {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-  padding: 0.6rem 1.25rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.qzPrintBtn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.5);
-}
-
-.qzError {
-  color: #f87171;
-  font-size: 0.85rem;
 }
 
 .resultHeader {
@@ -757,7 +722,9 @@
     flex-wrap: wrap;
     gap: 0;
   }
-  .qrItem {
+  
+  /* Default Layout */
+  .printLayout_default .qrItem {
     width: 33.33%;
     border: none;
     background: transparent;
@@ -768,4 +735,52 @@
     page-break-inside: avoid;
     break-inside: avoid;
   }
+
+  /* Single Label Layouts */
+  .printLayout_2x1, .printLayout_2x2, .printLayout_4x6 {
+    display: block;
+    width: 100%;
+  }
+
+  .printLayout_2x1 .qrItem, 
+  .printLayout_2x2 .qrItem, 
+  .printLayout_4x6 .qrItem {
+    width: 100vw;
+    height: 100vh;
+    border: none;
+    background: #fff;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .printLayout_2x1 .qrImage {
+    max-width: 60%;
+    max-height: 60%;
+    margin-bottom: 2px;
+  }
+  .printLayout_2x1 .qrLabels strong { font-size: 0.7rem; }
+  .printLayout_2x1 .qrLabels span { font-size: 0.6rem; }
+
+  .printLayout_2x2 .qrImage {
+    max-width: 75%;
+    max-height: 75%;
+    margin-bottom: 5px;
+  }
+  .printLayout_2x2 .qrLabels strong { font-size: 0.9rem; }
+  .printLayout_2x2 .qrLabels span { font-size: 0.75rem; }
+
+  .printLayout_4x6 .qrImage {
+    max-width: 85%;
+    max-height: 85%;
+    margin-bottom: 10px;
+  }
+  .printLayout_4x6 .qrLabels strong { font-size: 1.5rem; }
+  .printLayout_4x6 .qrLabels span { font-size: 1.2rem; }
 }

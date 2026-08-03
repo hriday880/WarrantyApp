@@ -3,12 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from './dashboard.module.css';
 
-// Dynamically require qz-tray only on the client side to avoid SSR errors
-let qz: any;
-if (typeof window !== 'undefined') {
-  const qzTray = require('qz-tray');
-  qz = qzTray.default || qzTray;
-}
+
 
 interface GeneratedProduct {
   id: string;
@@ -55,12 +50,8 @@ export default function AdminDashboard() {
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  // QZ Tray State
-  const [qzConnected, setQzConnected] = useState(false);
-  const [printers, setPrinters] = useState<string[]>([]);
-  const [selectedPrinter, setSelectedPrinter] = useState<string>('');
-  const [qzError, setQzError] = useState('');
-  const [isPrinting, setIsPrinting] = useState(false);
+  // Label Printing State
+  const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | 'default'>('2x1');
 
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -138,65 +129,8 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleConnectQZ = async () => {
-    setQzError('');
-    try {
-      if (!qz.websocket.isActive()) {
-        await qz.websocket.connect();
-      }
-      setQzConnected(true);
-      const foundPrinters = await qz.printers.find();
-      setPrinters(foundPrinters);
-      if (foundPrinters.length > 0) {
-        setSelectedPrinter(foundPrinters[0]);
-      }
-    } catch (err: any) {
-      setQzError(err.message || 'Failed to connect to QZ Tray. Is it running?');
-    }
-  };
-
-  const handleQZPrint = async () => {
-    if (!selectedPrinter) {
-      setQzError('Please select a printer first.');
-      return;
-    }
-    setIsPrinting(true);
-    setQzError('');
-    try {
-      const selectedProducts = results.filter(r => selectedIds.has(r.id));
-      if (selectedProducts.length === 0) return;
-
-      const config = qz.configs.create(selectedPrinter);
-
-      const htmlContent = `
-        <html>
-          <body style="margin:0; padding:10px; font-family:sans-serif; text-align:center;">
-             ${selectedProducts.map(p => `
-               <div style="page-break-after: always; display:flex; flex-direction:column; align-items:center; justify-content:center; height: 100vh;">
-                 <img src="${p.qrCodeDataUrl}" style="max-width: 80%; max-height: 80%;" />
-                 <h2 style="margin:10px 0 5px 0; font-size: 24px;">${p.name}</h2>
-                 <p style="margin:0; font-size: 16px;">SN: ${p.sku}</p>
-               </div>
-             `).join('')}
-          </body>
-        </html>
-      `;
-
-      const printData = [
-        {
-          type: 'pixel',
-          format: 'html',
-          flavor: 'plain',
-          data: htmlContent
-        }
-      ];
-
-      await qz.print(config, printData);
-    } catch (err: any) {
-      setQzError(err.message || 'Print failed.');
-    } finally {
-      setIsPrinting(false);
-    }
+  const handleNativePrint = () => {
+    window.print();
   };
 
   const handleClearCredits = async (userId: string, userName: string) => {
@@ -262,6 +196,14 @@ export default function AdminDashboard() {
 
   return (
     <div className={styles.container}>
+      <style>{`
+        @media print {
+          ${labelSize === '2x1' ? '@page { size: 2in 1in; margin: 0; }' : ''}
+          ${labelSize === '2x2' ? '@page { size: 2in 2in; margin: 0; }' : ''}
+          ${labelSize === '4x6' ? '@page { size: 4in 6in; margin: 0; }' : ''}
+          ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
+        }
+      `}</style>
       <header className={`${styles.header} ${styles.noPrint}`}>
         <div className={styles.headerTop}>
           <div className={styles.headerContent}>
@@ -360,32 +302,22 @@ export default function AdminDashboard() {
                     <h2 className={styles.cardTitle}>Generated {results.length} Batch QRs</h2>
                     <p className={styles.cardSubtitle}>Select codes to send to high-resolution printing</p>
                   </div>
-                  
-                  {/* QZ Tray Integration UI */}
-                  <div className={styles.qzContainer}>
-                    {!qzConnected ? (
-                      <button type="button" className={styles.qzConnectBtn} onClick={handleConnectQZ}>
-                        🔌 Connect QZ Tray
-                      </button>
-                    ) : (
-                      <div className={styles.qzActive}>
-                        <select 
-                          value={selectedPrinter} 
-                          onChange={(e) => setSelectedPrinter(e.target.value)}
-                          className={styles.printerSelect}
-                        >
-                          {printers.map(p => <option key={p} value={p}>{p}</option>)}
-                        </select>
-                        <button 
-                          className={styles.qzPrintBtn} 
-                          onClick={handleQZPrint}
-                          disabled={selectedIds.size === 0 || isPrinting}
-                        >
-                          {isPrinting ? 'Printing...' : `🖨️ Direct Print (${selectedIds.size})`}
-                        </button>
-                      </div>
-                    )}
-                    {qzError && <span className={styles.qzError}>{qzError}</span>}
+                  {/* Print Options */}
+                  <div className={styles.printOptionsContainer}>
+                    <div className={styles.labelSizeSelector}>
+                      <label htmlFor="labelSize">Print Layout:</label>
+                      <select 
+                        id="labelSize" 
+                        value={labelSize} 
+                        onChange={(e) => setLabelSize(e.target.value as any)}
+                        className={styles.printerSelect}
+                      >
+                        <option value="2x1">2" x 1" (Small Labels)</option>
+                        <option value="2x2">2" x 2" (Square Labels)</option>
+                        <option value="4x6">4" x 6" (Shipping Labels)</option>
+                        <option value="default">Standard A4 Sheet</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className={styles.actionButtons}>
@@ -394,7 +326,7 @@ export default function AdminDashboard() {
                     </button>
                     <button
                       className={styles.printBtn}
-                      onClick={() => window.print()}
+                      onClick={handleNativePrint}
                       disabled={selectedIds.size === 0}
                     >
                       🖨️ Print Selected ({selectedIds.size})
@@ -402,7 +334,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className={styles.qrGrid}>
+                <div className={`${styles.qrGrid} ${styles[`printLayout_${labelSize}`]}`}>
                   {results.map((product) => {
                     const isSelected = selectedIds.has(product.id);
                     return (
