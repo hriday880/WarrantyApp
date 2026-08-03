@@ -8,12 +8,10 @@ const finalUrl = (urlValue && urlValue !== 'undefined' && urlValue !== 'null') ?
 const tokenValue = process.env.TURSO_AUTH_TOKEN;
 const finalToken = (tokenValue && tokenValue !== 'undefined' && tokenValue !== 'null') ? tokenValue : "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3ODQ3OTQ1MjAsImlkIjoiMDE5ZjhlMGEtNmIwMS03YzVhLTgxOGMtZWQ5NzUyZjg0Y2UwIiwia2lkIjoidGFQQ2JOZ0Y1RXp1UEQtUTBFUnYwOVVWamZZa25zczdaTW9SSUo0S1ZsRSIsInJpZCI6Ijg3NGNjMzQzLTcyNGQtNGUxNS1iZTg0LWYzNDkzNmY2MTMwMSJ9.SeY8zx3-0zQKt-3EHwl6pzeOpV7Bc2Tpcg_KoqlE9wp0SjXzN9Q-q_Q1AW86sOOxMf1ANHz9rJ0T8AYMm3RkCg";
 
-const libsql = createClient({
+const adapter = new PrismaLibSql({
   url: finalUrl,
   authToken: finalToken,
 })
-
-const adapter = new PrismaLibSql(libsql)
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
