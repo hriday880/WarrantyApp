@@ -1,8 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import qz from 'qz-tray';
 import styles from './dashboard.module.css';
+
+// Dynamically require qz-tray only on the client side to avoid SSR errors
+let qz: any;
+if (typeof window !== 'undefined') {
+  const qzTray = require('qz-tray');
+  qz = qzTray.default || qzTray;
+}
 
 interface GeneratedProduct {
   id: string;
