@@ -51,7 +51,8 @@ export default function AdminDashboard() {
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Label Printing State
-  const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | 'default'>('2x1');
+  const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | 'default' | 'custom'>('2x1');
+  const [customSize, setCustomSize] = useState({ width: '2', height: '1' });
 
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -202,6 +203,7 @@ export default function AdminDashboard() {
           ${labelSize === '2x2' ? '@page { size: 2in 2in; margin: 0; }' : ''}
           ${labelSize === '4x6' ? '@page { size: 4in 6in; margin: 0; }' : ''}
           ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
+          ${labelSize === 'custom' ? `@page { size: ${customSize.width}in ${customSize.height}in; margin: 0; }` : ''}
         }
       `}</style>
       <header className={`${styles.header} ${styles.noPrint}`}>
@@ -316,7 +318,31 @@ export default function AdminDashboard() {
                         <option value="2x2">2" x 2" (Square Labels)</option>
                         <option value="4x6">4" x 6" (Shipping Labels)</option>
                         <option value="default">Standard A4 Sheet</option>
+                        <option value="custom">Custom Size</option>
                       </select>
+                      
+                      {labelSize === 'custom' && (
+                        <div className={styles.customSizeInputs}>
+                          <input 
+                            type="number" 
+                            step="0.1" 
+                            value={customSize.width} 
+                            onChange={(e) => setCustomSize(prev => ({ ...prev, width: e.target.value }))} 
+                            className={styles.sizeInput} 
+                            title="Width in inches"
+                          />
+                          <span>x</span>
+                          <input 
+                            type="number" 
+                            step="0.1" 
+                            value={customSize.height} 
+                            onChange={(e) => setCustomSize(prev => ({ ...prev, height: e.target.value }))} 
+                            className={styles.sizeInput} 
+                            title="Height in inches"
+                          />
+                          <span>in</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
