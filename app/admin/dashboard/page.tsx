@@ -52,7 +52,7 @@ export default function AdminDashboard() {
 
   // Label Printing State
   const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | 'default' | 'custom'>('2x1');
-  const [customSize, setCustomSize] = useState({ width: '2', height: '1' });
+  const [customSize, setCustomSize] = useState({ width: '10', height: '2', columns: '4' });
 
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -204,7 +204,8 @@ export default function AdminDashboard() {
           ${labelSize === '4x6' ? '@page { size: 4in 6in; margin: 0; }' : ''}
           ${labelSize === '18x18' ? '@page { size: 18mm 18mm; margin: 0; }' : ''}
           ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
-          ${labelSize === 'custom' ? `@page { size: ${customSize.width}in ${customSize.height}in; margin: 0; }` : ''}
+          ${labelSize === 'custom' ? `@page { size: ${customSize.width}cm ${customSize.height}cm; margin: 0; }` : ''}
+          ${labelSize === 'custom' ? `:root { --print-cols: ${customSize.columns || 1}; }` : ''}
         }
       `}</style>
       <header className={`${styles.header} ${styles.noPrint}`}>
@@ -331,7 +332,7 @@ export default function AdminDashboard() {
                             value={customSize.width} 
                             onChange={(e) => setCustomSize(prev => ({ ...prev, width: e.target.value }))} 
                             className={styles.sizeInput} 
-                            title="Width in inches"
+                            title="Total Page Width in cm"
                           />
                           <span>x</span>
                           <input 
@@ -340,9 +341,19 @@ export default function AdminDashboard() {
                             value={customSize.height} 
                             onChange={(e) => setCustomSize(prev => ({ ...prev, height: e.target.value }))} 
                             className={styles.sizeInput} 
-                            title="Height in inches"
+                            title="Total Page Height in cm"
                           />
-                          <span>in</span>
+                          <span>cm</span>
+                          <span style={{ marginLeft: '10px' }}>Columns:</span>
+                          <input 
+                            type="number" 
+                            step="1" 
+                            min="1"
+                            value={customSize.columns} 
+                            onChange={(e) => setCustomSize(prev => ({ ...prev, columns: e.target.value }))} 
+                            className={styles.sizeInput} 
+                            title="Labels per row"
+                          />
                         </div>
                       )}
                     </div>

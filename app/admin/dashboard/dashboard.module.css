@@ -766,7 +766,7 @@
   }
 
   /* Single Label Layouts */
-  .printLayout_2x1, .printLayout_2x2, .printLayout_4x6, .printLayout_custom, .printLayout_18x18 {
+  .printLayout_2x1, .printLayout_2x2, .printLayout_4x6, .printLayout_18x18 {
     display: block;
     width: 100%;
   }
@@ -774,7 +774,6 @@
   .printLayout_2x1 .qrItem, 
   .printLayout_2x2 .qrItem, 
   .printLayout_4x6 .qrItem,
-  .printLayout_custom .qrItem,
   .printLayout_18x18 .qrItem {
     width: 100vw;
     height: 100vh;
@@ -816,13 +815,36 @@
   .printLayout_4x6 .qrLabels strong { font-size: 1.5rem; }
   .printLayout_4x6 .qrLabels span { font-size: 1.2rem; }
 
-  .printLayout_custom .qrImage {
-    max-width: 75%;
-    max-height: 75%;
-    margin-bottom: 5px;
+  .printLayout_custom {
+    display: grid !important;
+    grid-template-columns: repeat(var(--print-cols, 1), 1fr);
+    width: 100vw;
+    gap: 0 !important;
   }
-  .printLayout_custom .qrLabels strong { font-size: 1rem; }
-  .printLayout_custom .qrLabels span { font-size: 0.8rem; }
+  .printLayout_custom .qrItem {
+    width: 100%;
+    height: 100vh;
+    box-sizing: border-box !important;
+    border: none;
+    background: #fff;
+    padding: 1mm;
+    margin: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .printLayout_custom .qrImage {
+    max-width: 90%;
+    max-height: 90%;
+    margin-bottom: 2px;
+    object-fit: contain;
+  }
+  .printLayout_custom .qrLabels strong { font-size: 8pt; line-height: 1.1; }
+  .printLayout_custom .qrLabels span { font-size: 6pt; line-height: 1.1; }
 
   .printLayout_18x18 .qrItem {
     padding: 0.5mm !important;
