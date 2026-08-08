@@ -261,7 +261,7 @@ export default function AdminDashboard() {
           ` : ''}
           ${labelSize === 'dual-qr' ? `
             @page {
-              size: 3.15in 2in landscape;
+              size: 3.15in 2in;
               margin: 0;
             }
             [data-print-layout="dual-qr"] {
@@ -286,7 +286,11 @@ export default function AdminDashboard() {
               break-inside: avoid !important;
               vertical-align: top !important;
               background-color: white !important;
-              height: 2in !important;
+              height: 1.85in !important;
+            }
+            [data-print-layout="dual-qr"] [data-print-item]:nth-child(even) {
+              page-break-after: always !important;
+              break-after: page !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] img {
               display: block !important;
