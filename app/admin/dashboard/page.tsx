@@ -261,7 +261,7 @@ export default function AdminDashboard() {
           ` : ''}
           ${labelSize === 'dual-qr' ? `
             @page {
-              size: 3.15in 2in landscape;
+              size: 8.2cm 2.5cm;
               margin: 0;
             }
             [data-print-layout="dual-qr"] {
@@ -279,14 +279,14 @@ export default function AdminDashboard() {
               flex-direction: column !important;
               align-items: center !important;
               justify-content: flex-start !important;
-              padding: 0.05in 0 0 0 !important;
+              padding: 1mm !important;
               margin: 0 !important;
               border: none !important;
               page-break-inside: avoid !important;
               break-inside: avoid !important;
               vertical-align: top !important;
               background-color: white !important;
-              height: 2in !important;
+              height: 2.5cm !important;
             }
             [data-print-layout="dual-qr"] [data-print-item]:nth-child(even) {
               page-break-after: always !important;
@@ -294,10 +294,10 @@ export default function AdminDashboard() {
             }
             [data-print-layout="dual-qr"] [data-print-item] img {
               display: block !important;
-              width: 1in !important;
-              height: 1in !important;
-              max-width: 1in !important;
-              max-height: 1in !important;
+              width: 1.4cm !important;
+              height: 1.4cm !important;
+              max-width: 1.4cm !important;
+              max-height: 1.4cm !important;
               margin: 0 auto !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
@@ -305,15 +305,15 @@ export default function AdminDashboard() {
             }
             [data-print-layout="dual-qr"] [data-print-item] strong {
               display: block !important;
-              font-size: 8pt !important;
+              font-size: 7pt !important;
               line-height: 1.1 !important;
-              margin: 4px 0 0 0 !important;
+              margin: 2px 0 0 0 !important;
               text-align: center !important;
               color: black !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] span {
               display: block !important;
-              font-size: 7pt !important;
+              font-size: 6pt !important;
               line-height: 1.1 !important;
               margin: 2px 0 0 0 !important;
               text-align: center !important;
