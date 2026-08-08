@@ -266,73 +266,73 @@ export default function AdminDashboard() {
             }
             [data-print-layout="dual-qr"] {
               display: block !important;
-              width: 100% !important;
+              width: 80mm !important;
               margin: 0 !important;
               padding: 0 !important;
-              font-size: 0 !important;
               background-color: white !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] {
-              display: inline-flex !important;
-              width: 50% !important;
+              display: inline-block !important;
+              width: 40mm !important;
+              height: 25mm !important;
               box-sizing: border-box !important;
-              align-items: center !important;
-              justify-content: center !important;
-              padding: 0 !important;
+              padding: 2mm !important;
               margin: 0 !important;
               border: none !important;
               page-break-inside: avoid !important;
               break-inside: avoid !important;
+              vertical-align: top !important;
               background-color: white !important;
-              height: 25mm !important;
               overflow: hidden !important;
-            }
-            [data-print-layout="dual-qr"] [data-print-item]:nth-child(odd) {
-              flex-direction: row-reverse !important;
-              padding-right: 2mm !important;
-            }
-            [data-print-layout="dual-qr"] [data-print-item]:nth-child(even) {
-              flex-direction: row !important;
-              padding-left: 2mm !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] img {
               display: block !important;
-              width: 20mm !important;
-              height: 20mm !important;
-              max-width: 20mm !important;
-              max-height: 20mm !important;
-              margin: 0 !important;
+              width: 19mm !important;
+              height: 19mm !important;
+              max-width: 19mm !important;
+              max-height: 19mm !important;
+              margin: 1mm 0 0 0 !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
               background-color: white !important;
             }
             [data-print-layout="dual-qr"] .qrLabels {
-              display: flex !important;
-              flex-direction: column !important;
-              justify-content: center !important;
-              align-items: center !important;
-              width: 17mm !important;
-              height: 25mm !important;
-              writing-mode: vertical-rl !important;
-              text-orientation: mixed !important;
+              display: block !important;
+              width: 16mm !important;
+              height: 21mm !important;
+              padding-top: 1.5mm !important;
+            }
+            [data-print-layout="dual-qr"] [data-print-item]:nth-child(odd) img {
+              float: right !important;
+            }
+            [data-print-layout="dual-qr"] [data-print-item]:nth-child(odd) .qrLabels {
+              float: left !important;
+              text-align: right !important;
+            }
+            [data-print-layout="dual-qr"] [data-print-item]:nth-child(even) img {
+              float: left !important;
+            }
+            [data-print-layout="dual-qr"] [data-print-item]:nth-child(even) .qrLabels {
+              float: right !important;
+              text-align: left !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] strong {
               display: block !important;
-              font-size: 8pt !important;
-              line-height: 1.1 !important;
+              font-size: 7pt !important;
+              line-height: 1.2 !important;
               margin: 0 0 2px 0 !important;
-              text-align: center !important;
               color: black !important;
-              word-break: break-word !important;
+              word-wrap: break-word !important;
+              word-break: break-all !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] span {
               display: block !important;
-              font-size: 7pt !important;
-              line-height: 1.1 !important;
+              font-size: 6pt !important;
+              line-height: 1.2 !important;
               margin: 0 !important;
-              text-align: center !important;
               color: black !important;
-              word-break: break-word !important;
+              word-wrap: break-word !important;
+              word-break: break-all !important;
             }
           ` : ''}
         }
