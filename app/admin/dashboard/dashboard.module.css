@@ -243,6 +243,45 @@
   background: rgba(59, 130, 246, 0.1);
 }
 
+.qzContainer {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.qzConnectBtn, .qzPrintBtn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qzConnectBtn:hover, .qzPrintBtn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.5);
+}
+
+.qzActive {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qzError {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-left: 1rem;
+}
+
 .submitBtn:hover, .printBtn:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px -10px rgba(37, 99, 235, 0.5);

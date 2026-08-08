@@ -3,7 +3,12 @@
 import { useState, useEffect } from 'react';
 import styles from './dashboard.module.css';
 
-
+// Dynamically require qz-tray only on the client side to avoid SSR errors
+let qz: any;
+if (typeof window !== 'undefined') {
+  const qzTray = require('qz-tray');
+  qz = qzTray.default || qzTray;
+}
 
 interface GeneratedProduct {
   id: string;
@@ -53,6 +58,20 @@ export default function AdminDashboard() {
   // Label Printing State
   const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | '18x18' | 'default' | 'custom'>('2x1');
   const [customSize, setCustomSize] = useState({ width: '8.5', height: '1', columns: '4', gap: '0.1' });
+
+  // QZ Tray State
+  const [qzConnected, setQzConnected] = useState(false);
+  const [printers, setPrinters] = useState<string[]>([]);
+  const [selectedPrinter, setSelectedPrinter] = useState<string>('');
+  const [qzError, setQzError] = useState('');
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  // QZ Tray State
+  const [qzConnected, setQzConnected] = useState(false);
+  const [printers, setPrinters] = useState<string[]>([]);
+  const [selectedPrinter, setSelectedPrinter] = useState<string>('');
+  const [qzError, setQzError] = useState('');
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -134,6 +153,170 @@ export default function AdminDashboard() {
     window.print();
   };
 
+  const handleConnectQZ = async () => {
+    setQzError('');
+    try {
+      if (!qz.websocket.isActive()) {
+        await qz.websocket.connect();
+      }
+      setQzConnected(true);
+      const foundPrinters = await qz.printers.find();
+      setPrinters(foundPrinters);
+      if (foundPrinters.length > 0) {
+        setSelectedPrinter(foundPrinters[0]);
+      }
+    } catch (err: any) {
+      setQzError(err.message || 'Failed to connect to QZ Tray. Is it running?');
+    }
+  };
+
+  const handleQZPrintTSPL = async () => {
+    if (!selectedPrinter) {
+      setQzError('Please select a printer first.');
+      return;
+    }
+    setIsPrinting(true);
+    setQzError('');
+    
+    try {
+      const selectedProducts = results.filter(r => selectedIds.has(r.id));
+      if (selectedProducts.length === 0) return;
+
+      const config = qz.configs.create(selectedPrinter);
+
+      // Start the TSPL string
+      // SIZE: width 78mm (4 * 18 + 3 * 2), height 18mm
+      let tspl = "SIZE 78 mm, 18 mm\n";
+      tspl += "GAP 2 mm, 0 mm\n";
+      tspl += "DIRECTION 1\n";
+      
+      // We will print in chunks of 4 labels (since it's a 4-column roll)
+      for (let i = 0; i < selectedProducts.length; i += 4) {
+        const chunk = selectedProducts.slice(i, i + 4);
+        
+        tspl += "CLS\n"; // Clear buffer for new row
+        
+        chunk.forEach((product, index) => {
+          // Calculate X offset for this column
+          // 203 DPI = 8 dots per mm.
+          // Col 0: 0mm -> 0 dots
+          // Col 1: 20mm -> 160 dots
+          // Col 2: 40mm -> 320 dots
+          // Col 3: 60mm -> 480 dots
+          // We add a small 24-dot (3mm) left margin inside each label's bounds for safe printing.
+          const xOffset = (index * 20 * 8) + 24; 
+          
+          // QRCODE X, Y, ECC level, cell width, mode, rotation, [model, mask,]"content"
+          // We use cell width 3 (approx 3 * 8 = 24 dots, good for 18mm labels)
+          tspl += `QRCODE ${xOffset}, 10, L, 3, A, 0, "${product.scanUrl}"\n`;
+          
+          // TEXT X, Y, font, rotation, x-multi, y-multi, "content"
+          // Print serial number below the QR code
+          tspl += `TEXT ${xOffset}, 115, "1", 0, 1, 1, "SN: ${product.sku}"\n`;
+        });
+        
+        tspl += "PRINT 1,1\n";
+      }
+
+      const printData = [
+        {
+          type: 'raw',
+          format: 'command',
+          flavor: 'plain',
+          data: tspl
+        }
+      ];
+
+      await qz.print(config, printData);
+    } catch (err: any) {
+      setQzError(err.message || 'Print failed.');
+    } finally {
+      setIsPrinting(false);
+    }
+  };
+
+  const handleConnectQZ = async () => {
+    setQzError('');
+    try {
+      if (!qz.websocket.isActive()) {
+        await qz.websocket.connect();
+      }
+      setQzConnected(true);
+      const foundPrinters = await qz.printers.find();
+      setPrinters(foundPrinters);
+      if (foundPrinters.length > 0) {
+        setSelectedPrinter(foundPrinters[0]);
+      }
+    } catch (err: any) {
+      setQzError(err.message || 'Failed to connect to QZ Tray. Is it running?');
+    }
+  };
+
+  const handleQZPrintTSPL = async () => {
+    if (!selectedPrinter) {
+      setQzError('Please select a printer first.');
+      return;
+    }
+    setIsPrinting(true);
+    setQzError('');
+    
+    try {
+      const selectedProducts = results.filter(r => selectedIds.has(r.id));
+      if (selectedProducts.length === 0) return;
+
+      const config = qz.configs.create(selectedPrinter);
+
+      // Start the TSPL string
+      // SIZE: width 78mm (4 * 18 + 3 * 2), height 18mm
+      let tspl = "SIZE 78 mm, 18 mm\n";
+      tspl += "GAP 2 mm, 0 mm\n";
+      tspl += "DIRECTION 1\n";
+      
+      // We will print in chunks of 4 labels (since it's a 4-column roll)
+      for (let i = 0; i < selectedProducts.length; i += 4) {
+        const chunk = selectedProducts.slice(i, i + 4);
+        
+        tspl += "CLS\n"; // Clear buffer for new row
+        
+        chunk.forEach((product, index) => {
+          // Calculate X offset for this column
+          // 203 DPI = 8 dots per mm.
+          // Col 0: 0mm -> 0 dots
+          // Col 1: 20mm -> 160 dots
+          // Col 2: 40mm -> 320 dots
+          // Col 3: 60mm -> 480 dots
+          // We add a small 24-dot (3mm) left margin inside each label's bounds for safe printing.
+          const xOffset = (index * 20 * 8) + 24; 
+          
+          // QRCODE X, Y, ECC level, cell width, mode, rotation, [model, mask,]"content"
+          // We use cell width 3 (approx 3 * 8 = 24 dots, good for 18mm labels)
+          tspl += `QRCODE ${xOffset}, 10, L, 3, A, 0, "${product.scanUrl}"\n`;
+          
+          // TEXT X, Y, font, rotation, x-multi, y-multi, "content"
+          // Print serial number below the QR code
+          tspl += `TEXT ${xOffset}, 115, "1", 0, 1, 1, "SN: ${product.sku}"\n`;
+        });
+        
+        tspl += "PRINT 1,1\n";
+      }
+
+      const printData = [
+        {
+          type: 'raw',
+          format: 'command',
+          flavor: 'plain',
+          data: tspl
+        }
+      ];
+
+      await qz.print(config, printData);
+    } catch (err: any) {
+      setQzError(err.message || 'Print failed.');
+    } finally {
+      setIsPrinting(false);
+    }
+  };
+
   const handleClearCredits = async (userId: string, userName: string) => {
     setActionLoadingId(userId);
     setBanner(null);
@@ -203,21 +386,22 @@ export default function AdminDashboard() {
           ${labelSize === '2x2' ? '@page { size: 2in 2in; margin: 0; }' : ''}
           ${labelSize === '4x6' ? '@page { size: 4in 6in; margin: 0; }' : ''}
           ${labelSize === '18x18' ? '@page { size: 18mm 18mm; margin: 0; }' : ''}
+          ${labelSize === '18x18-4col' ? '@page { size: 78mm 18mm; margin: 0; }' : ''}
           ${labelSize === 'default' ? '@page { margin: 0.5in; }' : ''}
           ${labelSize === 'custom' ? `@page { size: ${customSize.width}cm ${customSize.height}cm; margin: 0; }` : ''}
-          ${labelSize === 'custom' ? `
-            [data-print-layout="custom"] {
-              display: flex !important;
-              flex-wrap: wrap !important;
-              gap: 0 !important;
+          ${(labelSize === 'custom' || labelSize === '18x18-4col') ? `
+            [data-print-layout="custom"], [data-print-layout="18x18-4col"] {
+              display: grid !important;
+              grid-template-columns: repeat(${labelSize === '18x18-4col' ? '4' : (customSize.columns || 1)}, ${labelSize === '18x18-4col' ? '18mm' : `calc(100% / ${customSize.columns || 1})`}) !important;
+              ${labelSize === '18x18-4col' ? 'column-gap: 2mm !important;' : 'gap: 0 !important;'}
               justify-content: flex-start !important;
               width: 100% !important;
               padding: 0 !important;
               margin: 0 !important;
             }
-            [data-print-layout="custom"] [data-print-item] {
-              width: calc(100% / ${customSize.columns || 1}) !important;
-              height: ${customSize.height}cm !important;
+            [data-print-layout="custom"] [data-print-item], [data-print-layout="18x18-4col"] [data-print-item] {
+              width: ${labelSize === '18x18-4col' ? '18mm' : '100%'} !important;
+              height: ${labelSize === '18x18-4col' ? '18mm' : `${customSize.height}cm`} !important;
               box-sizing: border-box !important;
               border: none !important;
               background: #fff !important;
@@ -233,21 +417,23 @@ export default function AdminDashboard() {
               break-inside: avoid !important;
               border-radius: 0 !important;
             }
-            [data-print-layout="custom"] [data-print-item] img {
+            [data-print-layout="custom"] [data-print-item] img, [data-print-layout="18x18-4col"] [data-print-item] img {
               max-width: 100% !important;
-              max-height: 70% !important;
+              max-height: 65% !important;
               margin: 0 !important;
               object-fit: contain !important;
             }
-            [data-print-layout="custom"] [data-print-item] strong {
-              font-size: 5pt !important;
-              line-height: 1 !important;
-              margin: 0 !important;
+            [data-print-layout="custom"] [data-print-item] strong, [data-print-layout="18x18-4col"] [data-print-item] strong {
+              font-size: 7pt !important;
+              line-height: 1.1 !important;
+              margin: 1px 0 0 0 !important;
+              text-align: center !important;
             }
-            [data-print-layout="custom"] [data-print-item] span {
-              font-size: 4pt !important;
-              line-height: 1 !important;
+            [data-print-layout="custom"] [data-print-item] span, [data-print-layout="18x18-4col"] [data-print-item] span {
+              font-size: 6pt !important;
+              line-height: 1.1 !important;
               margin: 0 !important;
+              text-align: center !important;
             }
           ` : ''}
         }
@@ -364,6 +550,7 @@ export default function AdminDashboard() {
                         <option value="2x2">2" x 2" (Square Labels)</option>
                         <option value="4x6">4" x 6" (Shipping Labels)</option>
                         <option value="18x18">18mm x 18mm (Micro Labels)</option>
+                        <option value="18x18-4col">18mm x 18mm (4-Column Roll)</option>
                         <option value="default">Standard A4 Sheet</option>
                         <option value="custom">Custom Size</option>
                       </select>
@@ -401,6 +588,34 @@ export default function AdminDashboard() {
                         </div>
                       )}
                     </div>
+                  </div>
+
+
+                  {/* QZ Tray Integration UI */}
+                  <div className={styles.qzContainer}>
+                    {!qzConnected ? (
+                      <button type="button" className={styles.qzConnectBtn} onClick={handleConnectQZ}>
+                        🔌 Connect QZ Tray
+                      </button>
+                    ) : (
+                      <div className={styles.qzActive}>
+                        <select 
+                          value={selectedPrinter} 
+                          onChange={(e) => setSelectedPrinter(e.target.value)}
+                          className={styles.printerSelect}
+                        >
+                          {printers.map(p => <option key={p} value={p}>{p}</option>)}
+                        </select>
+                        <button 
+                          className={styles.qzPrintBtn} 
+                          onClick={handleQZPrintTSPL}
+                          disabled={selectedIds.size === 0 || isPrinting}
+                        >
+                          {isPrinting ? 'Printing...' : `🖨️ Direct Print TSPL (${selectedIds.size})`}
+                        </button>
+                      </div>
+                    )}
+                    {qzError && <span className={styles.qzError}>{qzError}</span>}
                   </div>
 
                   <div className={styles.actionButtons}>
