@@ -261,7 +261,7 @@ export default function AdminDashboard() {
           ` : ''}
           ${labelSize === 'dual-qr' ? `
             @page {
-              size: 3.15in 1.05in landscape;
+              size: 3.15in 2in landscape;
               margin: 0;
             }
             [data-print-layout="dual-qr"] {
@@ -279,21 +279,21 @@ export default function AdminDashboard() {
               flex-direction: column !important;
               align-items: center !important;
               justify-content: center !important;
-              padding: 0.05in 0 !important;
+              padding: 0.1in 0 !important;
               margin: 0 !important;
               border: none !important;
               page-break-inside: avoid !important;
               break-inside: avoid !important;
               vertical-align: top !important;
               background-color: white !important;
-              height: 1.05in !important;
+              height: 2in !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] img {
               display: block !important;
-              width: 0.65in !important;
-              height: 0.65in !important;
-              max-width: 0.65in !important;
-              max-height: 0.65in !important;
+              width: 1in !important;
+              height: 1in !important;
+              max-width: 1in !important;
+              max-height: 1in !important;
               margin: 0 auto !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
