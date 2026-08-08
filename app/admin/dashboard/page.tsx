@@ -261,7 +261,7 @@ export default function AdminDashboard() {
           ` : ''}
           ${labelSize === 'dual-qr' ? `
             @page {
-              size: 3.15in 2in;
+              size: 3.15in 2in landscape;
               margin: 0;
             }
             [data-print-layout="dual-qr"] {
