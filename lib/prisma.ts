@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaLibSQL } from '@prisma/adapter-libsql'
-import { createClient } from '@libsql/client/web'
+
 
 const urlValue = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL;
 const finalUrl = (urlValue && urlValue !== 'undefined' && urlValue !== 'null') ? urlValue : "libsql://warranty-app-hriday880.aws-ap-northeast-1.turso.io";
@@ -11,10 +11,10 @@ const finalToken = (tokenValue && tokenValue !== 'undefined' && tokenValue !== '
 console.log("urlValue:", urlValue);
 console.log("finalUrl:", finalUrl);
 
-const adapter = new PrismaLibSQL(createClient({
+const adapter = new PrismaLibSQL({
   url: finalUrl,
   authToken: finalToken,
-}))
+})
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
