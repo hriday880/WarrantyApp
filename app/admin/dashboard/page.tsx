@@ -261,7 +261,7 @@ export default function AdminDashboard() {
           ` : ''}
           ${labelSize === 'dual-qr' ? `
             @page {
-              size: 3.15in 1.5in;
+              size: 3.15in 1.5in landscape;
               margin: 0;
             }
             [data-print-layout="dual-qr"] {
@@ -270,6 +270,7 @@ export default function AdminDashboard() {
               margin: 0 !important;
               padding: 0 !important;
               font-size: 0 !important;
+              background-color: white !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] {
               display: inline-flex !important;
@@ -277,31 +278,42 @@ export default function AdminDashboard() {
               box-sizing: border-box !important;
               flex-direction: column !important;
               align-items: center !important;
-              justify-content: flex-start !important;
-              padding: 0.1in 0 !important;
+              justify-content: center !important;
+              padding: 0.05in 0 !important;
               margin: 0 !important;
               border: none !important;
               page-break-inside: avoid !important;
               break-inside: avoid !important;
               vertical-align: top !important;
+              background-color: white !important;
+              height: 1.5in !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] img {
-              width: 1in !important;
-              height: 1in !important;
-              object-fit: contain !important;
-              margin: 0 !important;
+              display: block !important;
+              width: 0.9in !important;
+              height: 0.9in !important;
+              max-width: 0.9in !important;
+              max-height: 0.9in !important;
+              margin: 0 auto !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              background-color: white !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] strong {
+              display: block !important;
               font-size: 8pt !important;
-              line-height: 1.2 !important;
+              line-height: 1.1 !important;
               margin: 4px 0 0 0 !important;
               text-align: center !important;
+              color: black !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] span {
+              display: block !important;
               font-size: 7pt !important;
-              line-height: 1.2 !important;
+              line-height: 1.1 !important;
               margin: 2px 0 0 0 !important;
               text-align: center !important;
+              color: black !important;
             }
           ` : ''}
         }
