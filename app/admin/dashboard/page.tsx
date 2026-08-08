@@ -56,7 +56,7 @@ export default function AdminDashboard() {
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Label Printing State
-  const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | '18x18' | 'default' | 'custom'>('2x1');
+  const [labelSize, setLabelSize] = useState<'2x1' | '2x2' | '4x6' | '18x18' | '18x18-4col' | 'default' | 'custom'>('2x1');
   const [customSize, setCustomSize] = useState({ width: '8.5', height: '1', columns: '4', gap: '0.1' });
 
   // QZ Tray State
