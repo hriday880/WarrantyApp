@@ -278,15 +278,15 @@ export default function AdminDashboard() {
               box-sizing: border-box !important;
               flex-direction: column !important;
               align-items: center !important;
-              justify-content: center !important;
-              padding: 0.1in 0 !important;
+              justify-content: flex-start !important;
+              padding: 0.05in 0 0 0 !important;
               margin: 0 !important;
               border: none !important;
               page-break-inside: avoid !important;
               break-inside: avoid !important;
               vertical-align: top !important;
               background-color: white !important;
-              height: 1.85in !important;
+              height: 2in !important;
             }
             [data-print-layout="dual-qr"] [data-print-item]:nth-child(even) {
               page-break-after: always !important;
