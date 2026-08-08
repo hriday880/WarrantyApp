@@ -261,7 +261,7 @@ export default function AdminDashboard() {
           ` : ''}
           ${labelSize === 'dual-qr' ? `
             @page {
-              size: 8.2cm 2.5cm landscape;
+              size: 80mm 25mm;
               margin: 0;
             }
             [data-print-layout="dual-qr"] {
@@ -279,25 +279,22 @@ export default function AdminDashboard() {
               flex-direction: column !important;
               align-items: center !important;
               justify-content: flex-start !important;
-              padding: 1mm !important;
+              padding: 1mm 0 0 0 !important;
               margin: 0 !important;
               border: none !important;
               page-break-inside: avoid !important;
               break-inside: avoid !important;
               vertical-align: top !important;
               background-color: white !important;
-              height: 2.5cm !important;
-            }
-            [data-print-layout="dual-qr"] [data-print-item]:nth-child(even) {
-              page-break-after: always !important;
-              break-after: page !important;
+              height: 25mm !important;
+              overflow: hidden !important;
             }
             [data-print-layout="dual-qr"] [data-print-item] img {
               display: block !important;
-              width: 1.4cm !important;
-              height: 1.4cm !important;
-              max-width: 1.4cm !important;
-              max-height: 1.4cm !important;
+              width: 13mm !important;
+              height: 13mm !important;
+              max-width: 13mm !important;
+              max-height: 13mm !important;
               margin: 0 auto !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
