@@ -66,12 +66,7 @@ export default function AdminDashboard() {
   const [qzError, setQzError] = useState('');
   const [isPrinting, setIsPrinting] = useState(false);
 
-  // QZ Tray State
-  const [qzConnected, setQzConnected] = useState(false);
-  const [printers, setPrinters] = useState<string[]>([]);
-  const [selectedPrinter, setSelectedPrinter] = useState<string>('');
-  const [qzError, setQzError] = useState('');
-  const [isPrinting, setIsPrinting] = useState(false);
+
 
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -235,87 +230,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleConnectQZ = async () => {
-    setQzError('');
-    try {
-      if (!qz.websocket.isActive()) {
-        await qz.websocket.connect();
-      }
-      setQzConnected(true);
-      const foundPrinters = await qz.printers.find();
-      setPrinters(foundPrinters);
-      if (foundPrinters.length > 0) {
-        setSelectedPrinter(foundPrinters[0]);
-      }
-    } catch (err: any) {
-      setQzError(err.message || 'Failed to connect to QZ Tray. Is it running?');
-    }
-  };
-
-  const handleQZPrintTSPL = async () => {
-    if (!selectedPrinter) {
-      setQzError('Please select a printer first.');
-      return;
-    }
-    setIsPrinting(true);
-    setQzError('');
-    
-    try {
-      const selectedProducts = results.filter(r => selectedIds.has(r.id));
-      if (selectedProducts.length === 0) return;
-
-      const config = qz.configs.create(selectedPrinter);
-
-      // Start the TSPL string
-      // SIZE: width 78mm (4 * 18 + 3 * 2), height 18mm
-      let tspl = "SIZE 78 mm, 18 mm\n";
-      tspl += "GAP 2 mm, 0 mm\n";
-      tspl += "DIRECTION 1\n";
-      
-      // We will print in chunks of 4 labels (since it's a 4-column roll)
-      for (let i = 0; i < selectedProducts.length; i += 4) {
-        const chunk = selectedProducts.slice(i, i + 4);
-        
-        tspl += "CLS\n"; // Clear buffer for new row
-        
-        chunk.forEach((product, index) => {
-          // Calculate X offset for this column
-          // 203 DPI = 8 dots per mm.
-          // Col 0: 0mm -> 0 dots
-          // Col 1: 20mm -> 160 dots
-          // Col 2: 40mm -> 320 dots
-          // Col 3: 60mm -> 480 dots
-          // We add a small 24-dot (3mm) left margin inside each label's bounds for safe printing.
-          const xOffset = (index * 20 * 8) + 24; 
-          
-          // QRCODE X, Y, ECC level, cell width, mode, rotation, [model, mask,]"content"
-          // We use cell width 3 (approx 3 * 8 = 24 dots, good for 18mm labels)
-          tspl += `QRCODE ${xOffset}, 10, L, 3, A, 0, "${product.scanUrl}"\n`;
-          
-          // TEXT X, Y, font, rotation, x-multi, y-multi, "content"
-          // Print serial number below the QR code
-          tspl += `TEXT ${xOffset}, 115, "1", 0, 1, 1, "SN: ${product.sku}"\n`;
-        });
-        
-        tspl += "PRINT 1,1\n";
-      }
-
-      const printData = [
-        {
-          type: 'raw',
-          format: 'command',
-          flavor: 'plain',
-          data: tspl
-        }
-      ];
-
-      await qz.print(config, printData);
-    } catch (err: any) {
-      setQzError(err.message || 'Print failed.');
-    } finally {
-      setIsPrinting(false);
-    }
-  };
 
   const handleClearCredits = async (userId: string, userName: string) => {
     setActionLoadingId(userId);
